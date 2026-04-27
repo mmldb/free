@@ -9,7 +9,6 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-50">
     <div id="root"></div>
@@ -22,7 +21,7 @@
         const MONTHLY_TARGET = 2000000;
         const FIXED_TAX = 150000;
 
-        // Adatok a számláid alapján [cite: 13, 18, 29, 39, 50, 62, 71, 81]
+        // Adatok a számláid alapján 
         const chartData = [
             { name: 'Jan', revenue: 3304125, target: 2000000 },
             { name: 'Feb', revenue: 3304125, target: 4000000 },
@@ -55,9 +54,10 @@
                                 type="password" 
                                 className="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-center text-xl outline-none"
                                 placeholder="PASSCODE"
+                                value={code}
                                 onChange={e => setCode(e.target.value)}
                             />
-                            <button onClick={login} className="w-full py-4 bg-indigo-600 rounded-2xl font-bold uppercase tracking-widest">Belépés</button>
+                            <button onClick={login} className="w-full py-4 bg-indigo-600 rounded-2xl font-bold uppercase tracking-widest shadow-lg active:scale-95 transition-transform">Belépés</button>
                         </div>
                     </div>
                 );
@@ -67,40 +67,48 @@
                 <div className="min-h-screen bg-slate-50 p-4 font-sans text-slate-900 max-w-md mx-auto">
                     <header className="flex justify-between items-center py-6">
                         <div>
-                            <h2 className="text-xl font-black italic tracking-tighter text-indigo-900">FREEOS.</h2>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase">Business Success Bt. [cite: 3, 24, 45, 66]</p>
+                            <h2 className="text-xl font-black italic tracking-tighter text-indigo-900 leading-none">FREEOS.</h2>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-1">BUSINESS SUCCESS BT. [cite: 3, 24, 45, 66]</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Áprilisi állapot</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Április</p>
+                            <p className="text-[10px] font-bold text-green-600">Cél felett!</p>
                         </div>
                     </header>
 
                     <div className="space-y-4 mb-8">
-                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 font-sans">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Összes Bruttó (YTD)</p>
+                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Bruttó bevétel (YTD)</p>
                             <p className="text-3xl font-black">{totalGross.toLocaleString()} Ft</p>
                         </div>
 
                         <div className="bg-indigo-600 p-6 rounded-3xl shadow-xl shadow-indigo-100 text-white">
-                            <p className="text-indigo-200 text-[10px] font-bold uppercase mb-1">Kivehető EKHO Nettó</p>
+                            <p className="text-indigo-200 text-[10px] font-bold uppercase mb-1">Nettó kivehető (EKHO)</p>
                             <p className="text-3xl font-black">{Math.floor(netEkho).toLocaleString()} Ft</p>
                             <p className="text-[9px] text-indigo-300 mt-2 font-medium italic">Adók és fixek levonva</p>
                         </div>
                     </div>
 
                     <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 h-64">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-6 text-center">Trend vs Cél (2M/hó)</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-6 text-center">Trend vs Célvonal</p>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={chartData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                 <XAxis dataKey="name" hide />
                                 <YAxis hide />
-                                <Tooltip />
+                                <Tooltip formatter={(value) => value.toLocaleString() + ' Ft'} />
                                 <Area type="monotone" dataKey="revenue" stroke="#4f46e5" strokeWidth={3} fill="#4f46e5" fillOpacity={0.1} />
                                 <Line type="monotone" dataKey="target" stroke="#e2e8f0" strokeDasharray="5 5" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
+
+                    <button 
+                        onClick={() => { localStorage.removeItem('pwa_auth'); window.location.reload(); }}
+                        className="w-full mt-8 py-3 text-slate-300 text-[10px] font-bold uppercase tracking-widest hover:text-red-400 transition-colors"
+                    >
+                        Kijelentkezés
+                    </button>
                 </div>
             );
         }
