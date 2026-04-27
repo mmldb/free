@@ -1,104 +1,13 @@
 <!DOCTYPE html>
 <html lang="hu">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Freelance OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-        .chart-container { position: relative; height: 250px; width: 100%; }
-    </style>
-</head>
-<body class="bg-slate-50">
-    <div id="app"></div>
-
-    <script>
-        // --- ADATOK (Fixen beégetve a beküldött számlák alapján) ---
-        const invoiceData = [
-            { m: 'Jan', a: 3304125 },
-            { m: 'Feb', a: 0 },
-            { m: 'Már', a: 6028828 }, // 4322200 + 1706628
-            { m: 'Ápr', a: 843986 }
-        ];
-        const SECRET_CODE = "2026FreeLanceD";
-        const MONTHLY_TARGET = 2000000;
-        const FIXED_TAX = 150000;
-
-        let isAuthenticated = localStorage.getItem('pwa_auth') === 'true';
-
-        function render() {
-            const root = document.getElementById('app');
-            
-            if (!isAuthenticated) {
-                root.innerHTML = `
-                    <div class="min-h-screen bg-slate-900 flex items-center justify-center p-6">
-                        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md text-center">
-                            <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-indigo-600">
-                                <i data-lucide="lock"></i>
-                            </div>
-                            <h2 class="text-2xl font-bold text-slate-800 mb-2 font-sans">Freelance OS</h2>
-                            <p class="text-slate-400 text-sm mb-6">Add meg a kódot</p>
-                            <input type="password" id="pass" class="w-full p-4 rounded-xl border border-slate-200 mb-4 text-center text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="••••">
-                            <button onclick="login()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all">Belépés</button>
-                            <p id="error" class="text-red-500 text-xs mt-4 hidden">Helytelen kód!</p>
-                        </div>
-                    </div>`;
-                lucide.createIcons();
-                return;
-            }
-
-            // Számítások
-            let cumulative = 0;
-            let monthsElapsed = 4;
-            invoiceData.forEach(d => cumulative += d.a);
-            
-            const taxableBase = cumulative - (FIXED_TAX * monthsElapsed);
-            const netTakeHome = taxableBase > 0 ? taxableBase * 0.85 : 0;
-            const targetTotal = monthsElapsed * MONTHLY_TARGET;
-            const percent = Math.round((cumulative / targetTotal) * 100);
-
-            root.innerHTML = `
-                <div class="max-w-md mx-auto p-4 pb-20 font-sans">
-                    <header class="flex justify-between items-center mb-8 pt-4">
-                        <div>
-                            <h1 class="text-2xl font-black text-indigo-950 italic tracking-tighter">FREEOS.</h1>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Business Success Bt.</p>
-                        </div>
-                        <div class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200 text-[10px] font-bold text-slate-500">
-                            MNB: 1 EUR ~ 392 FT
-                        </div>
-                    </header>
-
-                    <div class="space-y-4 mb-8">
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Bruttó Bevétel (YTD)</p>
-                            <p class="text-2xl font-black text-slate-900">${cumulative.toLocaleString()} Ft</p>
-                        </div>
-                        
-                        <div class="bg-indigo-600 p-5 rounded-2xl shadow-lg shadow-indigo-200 text-white">
-                            <p class="text-indigo-200 text-[10px] font-bold uppercase mb-1 font-medium">Kivehető EKHO Nettó</p>
-                            <div class="flex justify-between items-end">
-                                <p class="text-2xl font-black">${Math.floor(netTakeHome).toLocaleString()} Ft</p>
-                                <div class="bg-indigo-500 px-2 py-1 rounded text-[10px]">-15% adó levonva</div>
-                            </div>
-                        </div>
-
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
-                            <div>
-                                <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Cél Teljesülés</p>
-                                <p class="text-2xl font-black text-green-600">${percent}%</p>
-                            </div>
-                            <div class="h-12 w-12 rounded-full border-4 border-green-100 border-t-green-500 flex items-center justify-center text-[10px] font-bold text-green-600">
-                                ${monthsElapsed}/12
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm mb-8 text-center">
-                        <p class="text-slate-400 text-[10px] font-bold uppercase mb-4">Kumulatív Trend</p>
-                        <div class="flex items-end justify-between h-32 px-2 gap-2">
-                            ${invoiceData.map((d, i) => {
-                                const height = (d.a / 6028828) * 100; // Márc a max
-                                return `<div class="w-full bg-slate-100 rounded-t-lg relative" style="height: ${height || 5}%">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
