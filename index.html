@@ -4,117 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Freelance OS</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
 </head>
-<body class="bg-slate-50">
-    <div id="root"></div>
+<body class="bg-slate-900 flex items-center justify-center min-h-screen p-6 font-sans">
+    <div id="login-screen" class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center">
+        <h1 class="text-3xl font-black italic tracking-tighter text-slate-800 mb-2">FREEOS.</h1>
+        <p class="text-slate-400 text-sm mb-8 font-medium">Add meg a hozzáférési kódot</p>
+        <input type="password" id="pass" class="w-full p-4 rounded-2xl border-2 border-slate-100 text-center text-xl outline-none focus:border-indigo-500 mb-4 transition-all" placeholder="••••">
+        <button onclick="check()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase tracking-widest shadow-lg active:scale-95 transition-all">Belépés</button>
+        <p id="err" class="text-red-500 text-xs mt-4 hidden font-bold">Hibás kód!</p>
+    </div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line } = Recharts;
-
-        const SECRET_CODE = "2026FreeLanceD";
-        const MONTHLY_TARGET = 2000000;
-        const FIXED_TAX = 150000;
-
-        // Adatok a számláid alapján 
-        const chartData = [
-            { name: 'Jan', revenue: 3304125, target: 2000000 },
-            { name: 'Feb', revenue: 3304125, target: 4000000 },
-            { name: 'Már', revenue: 3304125 + 4322200 + 1706628, target: 6000000 },
-            { name: 'Ápr', revenue: 3304125 + 4322200 + 1706628 + 843986, target: 8000000 },
-        ];
-
-        function App() {
-            const [isAuth, setIsAuth] = useState(localStorage.getItem('pwa_auth') === 'true');
-            const [code, setCode] = useState('');
-
-            const login = () => {
-                if (code === SECRET_CODE) {
-                    localStorage.setItem('pwa_auth', 'true');
-                    setIsAuth(true);
-                }
-            };
-
-            const totalGross = chartData[3].revenue;
-            const monthsElapsed = 4;
-            const taxableBase = totalGross - (FIXED_TAX * monthsElapsed);
-            const netEkho = taxableBase > 0 ? taxableBase * 0.85 : 0;
-
-            if (!isAuth) {
-                return (
-                    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6 text-white font-sans">
-                        <div className="w-full max-w-sm space-y-6 text-center">
-                            <h1 className="text-3xl font-black italic tracking-tighter">FREEOS.</h1>
-                            <input 
-                                type="password" 
-                                className="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-center text-xl outline-none"
-                                placeholder="PASSCODE"
-                                value={code}
-                                onChange={e => setCode(e.target.value)}
-                            />
-                            <button onClick={login} className="w-full py-4 bg-indigo-600 rounded-2xl font-bold uppercase tracking-widest shadow-lg active:scale-95 transition-transform">Belépés</button>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="min-h-screen bg-slate-50 p-4 font-sans text-slate-900 max-w-md mx-auto">
-                    <header className="flex justify-between items-center py-6">
-                        <div>
-                            <h2 className="text-xl font-black italic tracking-tighter text-indigo-900 leading-none">FREEOS.</h2>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-1">BUSINESS SUCCESS BT. [cite: 3, 24, 45, 66]</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Április</p>
-                            <p className="text-[10px] font-bold text-green-600">Cél felett!</p>
-                        </div>
-                    </header>
-
-                    <div className="space-y-4 mb-8">
-                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Bruttó bevétel (YTD)</p>
-                            <p className="text-3xl font-black">{totalGross.toLocaleString()} Ft</p>
-                        </div>
-
-                        <div className="bg-indigo-600 p-6 rounded-3xl shadow-xl shadow-indigo-100 text-white">
-                            <p className="text-indigo-200 text-[10px] font-bold uppercase mb-1">Nettó kivehető (EKHO)</p>
-                            <p className="text-3xl font-black">{Math.floor(netEkho).toLocaleString()} Ft</p>
-                            <p className="text-[9px] text-indigo-300 mt-2 font-medium italic">Adók és fixek levonva</p>
-                        </div>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 h-64">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-6 text-center">Trend vs Célvonal</p>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={chartData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="name" hide />
-                                <YAxis hide />
-                                <Tooltip formatter={(value) => value.toLocaleString() + ' Ft'} />
-                                <Area type="monotone" dataKey="revenue" stroke="#4f46e5" strokeWidth={3} fill="#4f46e5" fillOpacity={0.1} />
-                                <Line type="monotone" dataKey="target" stroke="#e2e8f0" strokeDasharray="5 5" />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-
-                    <button 
-                        onClick={() => { localStorage.removeItem('pwa_auth'); window.location.reload(); }}
-                        className="w-full mt-8 py-3 text-slate-300 text-[10px] font-bold uppercase tracking-widest hover:text-red-400 transition-colors"
-                    >
-                        Kijelentkezés
-                    </button>
+    <div id="main-screen" class="hidden bg-slate-50 min-h-screen w-full fixed inset-0 p-4 overflow-y-auto">
+        <div class="max-w-md mx-auto py-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-black italic tracking-tighter text-indigo-900">FREEOS.</h2>
+                <span class="bg-white px-3 py-1 rounded-full text-[10px] font-bold border border-slate-200 uppercase tracking-widest text-slate-400">2026 / Q2</span>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Bruttó (YTD) [cite: 13, 18, 29, 39, 50, 62, 71, 81]</p>
+                    <p class="text-3xl font-black text-slate-900">10 176 939 Ft</p>
                 </div>
-            );
-        }
+                <div class="bg-indigo-600 p-6 rounded-3xl shadow-xl shadow-indigo-100 text-white">
+                    <p class="text-indigo-200 text-[10px] font-bold uppercase mb-1">Nettó EKHO-s</p>
+                    <p class="text-3xl font-black tracking-tight">8 140 398 Ft</p>
+                    <p class="text-[9px] text-indigo-300 mt-2 font-medium italic italic">Fix adók levonva</p>
+                </div>
+            </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-4 text-center">Cél: 2M / hó</p>
+                <div class="flex items-end justify-between h-32 gap-2">
+                    <div class="w-full bg-indigo-100 rounded-t-xl" style="height: 33%"></div>
+                    <div class="w-full bg-indigo-200 rounded-t-xl" style="height: 40%"></div>
+                    <div class="w-full bg-indigo-500 rounded-t-xl" style="height: 90%"></div>
+                    <div class="w-full bg-indigo-600 rounded-t-xl" style="height: 100%"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-300 uppercase">
+                    <span>Jan</span><span>Feb</span><span>Már</span><span>Ápr</span>
+                </div>
+            </div>
+            
+            <button onclick="localStorage.clear(); location.reload();" class="w-full mt-12 py-3 text-slate-300 text-[10px] font-bold uppercase tracking-widest border-2 border-dashed border-slate-200 rounded-2xl">Kilépés</button>
+        </div>
+    </div>
+
+    <script>
+        function check() {
+            if(document.getElementById('pass').value === '2026FreeLanceD') {
+                localStorage.setItem('auth', '1');
+                show();
+            } else {
+                document.getElementById('err').classList.remove('hidden');
+            }
+        }
+        function show() {
+            if(localStorage.getItem('auth')) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-screen').classList.remove('hidden');
+                document.body.classList.remove('bg-slate-900');
+            }
+        }
+        show();
     </script>
 </body>
 </html>
