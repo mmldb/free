@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Freelance OS</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #f8fafc; }
+        .recharts-cartesian-grid-horizontal line { stroke: #f1f5f9; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } = Recharts;
+        const { Wallet, TrendingUp, Landmark, ArrowUpRight, Lock, LogOut } = lucide;
+
+        // --- ADATOK ---
+        const invoiceData = [
+            { month: 'Jan', amount: 3304125 },
+            { month: 'Feb', amount: 0 },
+            { month: 'Már', amount: 4322200 + 1706628 },
+            { month: 'Ápr', amount: 843986 },
+        ];
+
+        const SECRET_CODE = "2026FreeLanceD";
+        const MONTHLY_TARGET = 2000000;
+        const FIXED_TAX = 150000;
+
+        function App() {
+            const [isAuthenticated, setIsAuthenticated] = useState(false);
+            const [passcode, setPasscode] = useState('');
+            const [error, setError] = useState(false);
+
+            useEffect(() => {
+                if (localStorage.getItem('pwa_auth') === 'true') setIsAuthenticated(true);
+            }, []);
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (passcode === SECRET_CODE) {
+                    localStorage.setItem('pwa_auth', 'true');
+                    setIsAuthenticated(true);
+                } else {
+                    setError(true);
+                }
+            };
+
+            // Logika
+            let runningTotal = 0;
+            const chartData = invoiceData.map((d, index) => {
+                runningTotal += d.amount;
+                return {
+                    name: d.month,
+                    revenue: runningTotal,
+                    target: (index + 1) * MONTHLY_TARGET
+                };
+            });
+
+            const monthsElapsed = 4;
+            const totalGross = runningTotal;
+            const taxableBase = totalGross - (FIXED_TAX * monthsElapsed);
+            const netTakeHome = taxableBase > 0 ? taxableBase * 0.85 : 0;
+
+            if (!isAuthenticated) {
+                return (
+                    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
+                        <div className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md text-center">
+                            <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-indigo-600">
+                                <i data-lucide="lock"></i>
+                            </div>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-2">Freelance OS</h2>
+                            <form onSubmit={handleLogin}>
+                                <input 
+                                    type="password" 
+                                    value={passcode}
+                                    onChange={(e) => setPasscode(e.target.value)}
+                                    className={`w-full p-4 rounded-xl border ${error ? 'border-red-500' : 'border-slate-200'} mb-4 text-center text-lg`}
+                                    placeholder="Kód"
+                                />
+                                <button className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold">Belépés</button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="max-w-4xl mx-auto p-4 pb-20">
+                    <header className="flex justify-between items-center mb-8 pt-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-indigo-900 leading-tight">Freelance OS</h1>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Business Success Bt.</p>
+                        </div>
+                        <div className="bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 text-sm">
+                            <span className="text-slate-500 font-medium">MNB:</span> <span className="font-bold text-indigo-600">~392.4 Ft</span>
+                        </div>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <p className="text-slate-500 text-xs font-bold uppercase mb-2">Összes Bruttó</p>
+                            <p className="text-2xl font-black text-slate-800">{totalGross.toLocaleString()} Ft</p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl border border-indigo-100 shadow-sm ring-1 ring-indigo-50">
+                            <p className="text-indigo-500 text-xs font-bold uppercase mb-2">EKHO Nettó</p>
+                            <p className="text-2xl font-black text-indigo-600">{Math.floor(netTakeHome).toLocaleString()} Ft</p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <p className="text-slate-500 text-xs font-bold uppercase mb-2">Cél állás</p>
+                            <p className="text-2xl font-black text-green-600">{Math.round((totalGross/8000000)*100)}%</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm mb-8">
+                        <h3 className="font-bold text-slate-800 mb-6">Bevételi Hajsza (2026)</h3>
+                        <div className="h-64 w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={chartData}>
+                                    <defs>
+                                        <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
+                                            <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                                    <YAxis hide domain={[0, 'auto']} />
+                                    <Tooltip contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} />
+                                    <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={4} fill="url(#colorRev)" />
+                                    <Line type="monotone" dataKey="target" stroke="#cbd5e1" strokeDasharray="5 5" dot={false} strokeWidth={2} />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    <button 
+                        onClick={() => { localStorage.removeItem('pwa_auth'); location.reload(); }}
+                        className="w-full py-4 text-slate-400 text-xs font-medium border-2 border-dashed border-slate-200 rounded-2xl hover:bg-slate-100 transition-all"
+                    >
+                        Kijelentkezés és adatok törlése
+                    </button>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        // Ikonok betöltése
+        setTimeout(() => lucide.createIcons(), 100);
+    </script>
+</body>
+</html>
