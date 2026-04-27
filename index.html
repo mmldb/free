@@ -5,69 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Freelance OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden { display: none !important; }
+    </style>
 </head>
-<body class="bg-slate-900 flex items-center justify-center min-h-screen p-6 font-sans">
-    <div id="login-screen" class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center">
-        <h1 class="text-3xl font-black italic tracking-tighter text-slate-800 mb-2">FREEOS.</h1>
-        <p class="text-slate-400 text-sm mb-8 font-medium">Add meg a hozzáférési kódot</p>
-        <input type="password" id="pass" class="w-full p-4 rounded-2xl border-2 border-slate-100 text-center text-xl outline-none focus:border-indigo-500 mb-4 transition-all" placeholder="••••">
-        <button onclick="check()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase tracking-widest shadow-lg active:scale-95 transition-all">Belépés</button>
-        <p id="err" class="text-red-500 text-xs mt-4 hidden font-bold">Hibás kód!</p>
+<body class="bg-slate-900 min-h-screen font-sans">
+    <div id="login-screen" class="flex items-center justify-center min-h-screen p-6">
+        <div class="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-sm text-center">
+            <h1 class="text-3xl font-black italic tracking-tighter text-slate-800 mb-2">FREEOS.</h1>
+            <p class="text-slate-400 text-sm mb-8 font-medium">Business Success Bt.</p>
+            <input type="password" id="pass" class="w-full p-4 rounded-2xl border-2 border-slate-100 text-center text-xl outline-none focus:border-indigo-500 mb-4 transition-all" placeholder="••••">
+            <button onclick="check()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase tracking-widest shadow-lg active:scale-95 transition-all">Belépés</button>
+            <p id="err" class="text-red-500 text-xs mt-4 hidden font-bold">Hibás kód!</p>
+        </div>
     </div>
 
-    <div id="main-screen" class="hidden bg-slate-50 min-h-screen w-full fixed inset-0 p-4 overflow-y-auto">
+    <div id="main-screen" class="hidden bg-slate-50 min-h-screen w-full p-4 overflow-y-auto">
         <div class="max-w-md mx-auto py-6">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-black italic tracking-tighter text-indigo-900">FREEOS.</h2>
+            <div class="flex justify-between items-center mb-8 px-2">
+                <div>
+                    <h2 class="text-2xl font-black italic tracking-tighter text-indigo-900 leading-none">FREEOS.</h2>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mt-1">BUSINESS SUCCESS BT.</p>
+                </div>
                 <span class="bg-white px-3 py-1 rounded-full text-[10px] font-bold border border-slate-200 uppercase tracking-widest text-slate-400">2026 / Q2</span>
             </div>
             
             <div class="space-y-4 mb-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Bruttó (YTD) [cite: 13, 18, 29, 39, 50, 62, 71, 81]</p>
+                <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Bruttó bevétel (YTD)</p>
                     <p class="text-3xl font-black text-slate-900">10 176 939 Ft</p>
                 </div>
-                <div class="bg-indigo-600 p-6 rounded-3xl shadow-xl shadow-indigo-100 text-white">
-                    <p class="text-indigo-200 text-[10px] font-bold uppercase mb-1">Nettó EKHO-s</p>
+                <div class="bg-indigo-600 p-6 rounded-[32px] shadow-xl shadow-indigo-100 text-white relative overflow-hidden">
+                    <p class="text-indigo-200 text-[10px] font-bold uppercase mb-1">Nettó kivehető (EKHO)</p>
                     <p class="text-3xl font-black tracking-tight">8 140 398 Ft</p>
-                    <p class="text-[9px] text-indigo-300 mt-2 font-medium italic italic">Fix adók levonva</p>
+                    <p class="text-[9px] text-indigo-300 mt-2 font-medium italic">Adók és fixek levonva</p>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                <p class="text-[10px] font-bold text-slate-400 uppercase mb-4 text-center">Cél: 2M / hó</p>
-                <div class="flex items-end justify-between h-32 gap-2">
-                    <div class="w-full bg-indigo-100 rounded-t-xl" style="height: 33%"></div>
-                    <div class="w-full bg-indigo-200 rounded-t-xl" style="height: 40%"></div>
-                    <div class="w-full bg-indigo-500 rounded-t-xl" style="height: 90%"></div>
-                    <div class="w-full bg-indigo-600 rounded-t-xl" style="height: 100%"></div>
+            <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm mb-6">
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-6 text-center tracking-widest">Trend vs Cél (2M/hó)</p>
+                <div class="flex items-end justify-between h-32 gap-3 px-2">
+                    <div class="w-full bg-slate-100 rounded-t-xl relative group">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-400">3.3M</div>
+                        <div class="w-full bg-indigo-200 rounded-t-xl" style="height: 33%"></div>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-t-xl relative">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-400">3.3M</div>
+                        <div class="w-full bg-indigo-300 rounded-t-xl" style="height: 33%"></div>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-t-xl relative">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-400">9.3M</div>
+                        <div class="w-full bg-indigo-500 rounded-t-xl" style="height: 93%"></div>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-t-xl relative">
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-400">10.1M</div>
+                        <div class="w-full bg-indigo-600 rounded-t-xl" style="height: 100%"></div>
+                    </div>
                 </div>
-                <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-300 uppercase">
+                <div class="flex justify-between mt-4 text-[10px] font-bold text-slate-300 uppercase px-1">
                     <span>Jan</span><span>Feb</span><span>Már</span><span>Ápr</span>
                 </div>
             </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm text-center">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Számlák száma</p>
+                    <p class="text-xl font-black text-slate-800">4 db</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm text-center">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Státusz</p>
+                    <p class="text-xl font-black text-green-500 italic">AKTÍV</p>
+                </div>
+            </div>
             
-            <button onclick="localStorage.clear(); location.reload();" class="w-full mt-12 py-3 text-slate-300 text-[10px] font-bold uppercase tracking-widest border-2 border-dashed border-slate-200 rounded-2xl">Kilépés</button>
+            <button onclick="logout()" class="w-full mt-8 py-4 text-slate-300 text-[10px] font-bold uppercase tracking-widest hover:text-slate-500 transition-colors">Kijelentkezés</button>
         </div>
     </div>
 
     <script>
+        const PASS = "2026FreeLanceD";
+
         function check() {
-            if(document.getElementById('pass').value === '2026FreeLanceD') {
-                localStorage.setItem('auth', '1');
-                show();
+            const input = document.getElementById('pass').value;
+            if(input === PASS) {
+                localStorage.setItem('freeos_auth', 'true');
+                render();
             } else {
-                document.getElementById('err').classList.remove('hidden');
+                const err = document.getElementById('err');
+                err.classList.remove('hidden');
+                setTimeout(() => err.classList.add('hidden'), 2000);
             }
         }
-        function show() {
-            if(localStorage.getItem('auth')) {
+
+        function logout() {
+            localStorage.removeItem('freeos_auth');
+            location.reload();
+        }
+
+        function render() {
+            const isAuth = localStorage.getItem('freeos_auth') === 'true';
+            if(isAuth) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-screen').classList.remove('hidden');
-                document.body.classList.remove('bg-slate-900');
+                document.body.className = "bg-slate-50 min-h-screen font-sans";
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('main-screen').classList.add('hidden');
+                document.body.className = "bg-slate-900 min-h-screen font-sans";
             }
         }
-        show();
+
+        // Indításkor ellenőrzés
+        render();
+
+        // Enter gombra is lépjen be
+        document.getElementById('pass').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') check();
+        });
     </script>
 </body>
 </html>
