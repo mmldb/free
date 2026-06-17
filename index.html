@@ -6,17 +6,21 @@
     <title>Freelance Tracker</title>
     <style>
         :root {
-            color-scheme: light;
-            --bg: #f6f7f9;
-            --panel: #ffffff;
-            --text: #171717;
-            --muted: #6b7280;
-            --line: #e5e7eb;
-            --accent: #2563eb;
-            --accent-soft: #dbeafe;
-            --good: #15803d;
-            --danger: #b91c1c;
-            --shadow: 0 16px 45px rgba(15, 23, 42, 0.08);
+            color-scheme: dark;
+            --bg: #05070d;
+            --panel: #0d111b;
+            --panel-soft: #121827;
+            --text: #f8fafc;
+            --muted: #8b96aa;
+            --line: #202838;
+            --accent: #60a5fa;
+            --accent-strong: #2563eb;
+            --accent-soft: rgba(96, 165, 250, 0.18);
+            --good: #22c55e;
+            --good-soft: rgba(34, 197, 94, 0.16);
+            --danger: #fb7185;
+            --danger-soft: rgba(251, 113, 133, 0.15);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
         }
 
         * {
@@ -26,7 +30,9 @@
         body {
             margin: 0;
             min-height: 100vh;
-            background: var(--bg);
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 32rem),
+                var(--bg);
             color: var(--text);
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
@@ -83,7 +89,8 @@
             align-items: start;
         }
 
-        .panel {
+        .panel,
+        .metric {
             background: var(--panel);
             border: 1px solid var(--line);
             border-radius: 8px;
@@ -100,16 +107,23 @@
 
         .metrics {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 12px;
             margin-bottom: 16px;
         }
 
         .metric {
             padding: 16px;
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 8px;
+        }
+
+        .metric.received {
+            background: linear-gradient(145deg, rgba(34, 197, 94, 0.18), var(--panel));
+            border-color: rgba(34, 197, 94, 0.34);
+        }
+
+        .metric.open {
+            background: linear-gradient(145deg, rgba(251, 113, 133, 0.13), var(--panel));
+            border-color: rgba(251, 113, 133, 0.26);
         }
 
         .metric span,
@@ -125,32 +139,55 @@
         .metric strong {
             display: block;
             margin-top: 8px;
-            font-size: clamp(22px, 3vw, 34px);
+            font-size: clamp(20px, 2.6vw, 32px);
             line-height: 1.05;
         }
 
         .progress-wrap {
             height: 18px;
             overflow: hidden;
+            border: 1px solid var(--line);
             border-radius: 999px;
-            background: #edf0f4;
+            background: var(--panel-soft);
         }
 
         .progress {
             width: 0;
             height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg, #2563eb, #16a34a);
+            background: linear-gradient(90deg, var(--accent-strong), var(--good));
             transition: width 180ms ease;
         }
 
         .chart {
+            position: relative;
             height: 260px;
             display: flex;
             align-items: flex-end;
             gap: 8px;
             padding-top: 28px;
+            padding-bottom: 28px;
             border-bottom: 1px solid var(--line);
+        }
+
+        .target-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            border-top: 1px dashed rgba(248, 250, 252, 0.34);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .target-line span {
+            position: absolute;
+            right: 0;
+            bottom: 6px;
+            color: rgba(248, 250, 252, 0.58);
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
         }
 
         .bar-col {
@@ -162,17 +199,19 @@
             justify-content: flex-end;
             align-items: stretch;
             gap: 8px;
+            position: relative;
+            z-index: 1;
         }
 
         .bar {
             min-height: 3px;
             border-radius: 6px 6px 0 0;
-            background: var(--accent);
+            background: linear-gradient(180deg, var(--accent), var(--accent-strong));
             position: relative;
         }
 
         .bar.empty {
-            background: #e5e7eb;
+            background: #1b2332;
         }
 
         .bar-value {
@@ -221,7 +260,7 @@
             border: 1px solid var(--line);
             border-radius: 8px;
             padding: 10px 12px;
-            background: #fff;
+            background: #090d15;
             color: var(--text);
             outline: none;
         }
@@ -231,18 +270,38 @@
             box-shadow: 0 0 0 3px var(--accent-soft);
         }
 
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel-soft);
+            color: var(--text);
+            font-weight: 800;
+            text-transform: none;
+        }
+
+        .checkbox-row input {
+            width: 18px;
+            min-height: 18px;
+            accent-color: var(--good);
+        }
+
         .btn {
             min-height: 44px;
             border: 0;
             border-radius: 8px;
             padding: 0 16px;
-            background: var(--accent);
+            background: var(--accent-strong);
             color: #fff;
             font-weight: 800;
         }
 
         .btn.secondary {
-            background: #111827;
+            background: #1f2937;
         }
 
         .btn.danger {
@@ -250,7 +309,33 @@
             padding: 0 10px;
             background: transparent;
             color: var(--danger);
-            border: 1px solid #fecaca;
+            border: 1px solid rgba(251, 113, 133, 0.36);
+        }
+
+        .paid-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 34px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 0 10px;
+            background: var(--panel-soft);
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .paid-toggle.is-paid {
+            border-color: rgba(34, 197, 94, 0.4);
+            background: var(--good-soft);
+            color: var(--good);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: currentColor;
         }
 
         table {
@@ -275,10 +360,27 @@
             font-weight: 800;
         }
 
+        .paid-row .amount {
+            color: var(--good);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
         .empty-state {
             padding: 22px 0 8px;
             color: var(--muted);
             text-align: center;
+        }
+
+        @media (max-width: 980px) {
+            .metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
 
         @media (max-width: 820px) {
@@ -294,7 +396,6 @@
             }
 
             .grid,
-            .metrics,
             .form-grid,
             .target-row {
                 grid-template-columns: 1fr;
@@ -305,8 +406,20 @@
                 gap: 5px;
             }
 
-            .bar-value {
+            .bar-value,
+            .target-line span {
                 display: none;
+            }
+
+            th:nth-child(2),
+            td:nth-child(2) {
+                display: none;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .metrics {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -316,22 +429,30 @@
         <header>
             <div>
                 <h1>Freelance Tracker</h1>
-                <p class="subtitle">Számlák, éves cél, haladás. Ennyi.</p>
+                <p class="subtitle">Szamlak, eves cel, beerkezett penz. Ennyi.</p>
             </div>
             <div class="year-pill" id="yearLabel"></div>
         </header>
 
-        <section class="metrics" aria-label="Összesítés">
+        <section class="metrics" aria-label="Osszesites">
             <div class="metric">
-                <span>Bevétel idén</span>
-                <strong id="totalIncome">0 Ft</strong>
+                <span>Osszes szamla</span>
+                <strong id="billedIncome">0 Ft</strong>
+            </div>
+            <div class="metric received">
+                <span>Beerkezett</span>
+                <strong id="receivedIncome">0 Ft</strong>
+            </div>
+            <div class="metric open">
+                <span>Kint van</span>
+                <strong id="openIncome">0 Ft</strong>
             </div>
             <div class="metric">
-                <span>Éves cél</span>
+                <span>Eves cel</span>
                 <strong id="targetValue">0 Ft</strong>
             </div>
             <div class="metric">
-                <span>Haladás</span>
+                <span>Haladas</span>
                 <strong id="progressValue">0%</strong>
             </div>
         </section>
@@ -339,38 +460,42 @@
         <div class="grid">
             <section class="panel">
                 <div class="section">
-                    <div class="progress-wrap" aria-label="Éves cél haladás">
+                    <div class="progress-wrap" aria-label="Eves cel haladas">
                         <div class="progress" id="progressBar"></div>
                     </div>
                 </div>
                 <div class="section">
-                    <div class="chart" id="chart" aria-label="Havi bevétel grafikon"></div>
+                    <div class="chart" id="chart" aria-label="Havi beerkezett bevetel grafikon"></div>
                 </div>
             </section>
 
             <aside class="panel">
                 <form class="section target-row" id="targetForm">
                     <div class="field">
-                        <label for="targetInput">Éves target</label>
+                        <label for="targetInput">Eves target</label>
                         <input id="targetInput" type="number" min="0" step="10000" inputmode="numeric">
                     </div>
-                    <button class="btn secondary" type="submit">Mentés</button>
+                    <button class="btn secondary" type="submit">Mentes</button>
                 </form>
 
                 <form class="section form-grid" id="invoiceForm">
                     <div class="field">
-                        <label for="invoiceDate">Dátum</label>
+                        <label for="invoiceDate">Datum</label>
                         <input id="invoiceDate" type="date" required>
                     </div>
                     <div class="field">
-                        <label for="invoiceAmount">Összeg</label>
+                        <label for="invoiceAmount">Osszeg</label>
                         <input id="invoiceAmount" type="number" min="1" step="1000" inputmode="numeric" required>
                     </div>
                     <div class="field full">
-                        <label for="invoiceName">Megjegyzés</label>
-                        <input id="invoiceName" type="text" placeholder="pl. januári számla">
+                        <label for="invoiceName">Megjegyzes</label>
+                        <input id="invoiceName" type="text" placeholder="pl. januari szamla">
                     </div>
-                    <button class="btn" type="submit">Számla hozzáadása</button>
+                    <label class="checkbox-row field full" for="invoicePaid">
+                        <input id="invoicePaid" type="checkbox">
+                        Penz beerkezett
+                    </label>
+                    <button class="btn" type="submit">Szamla hozzaadasa</button>
                 </form>
             </aside>
         </div>
@@ -379,21 +504,22 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Dátum</th>
-                        <th>Megjegyzés</th>
-                        <th>Összeg</th>
+                        <th>Datum</th>
+                        <th>Megjegyzes</th>
+                        <th>Statusz</th>
+                        <th>Osszeg</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="invoiceList"></tbody>
             </table>
-            <div class="empty-state" id="emptyState">Még nincs felvitt számla.</div>
+            <div class="empty-state" id="emptyState">Meg nincs felvitt szamla.</div>
         </section>
     </main>
 
     <script>
         const STORAGE_KEY = "freelance_tracker_data";
-        const MONTHS = ["Jan", "Feb", "Már", "Ápr", "Máj", "Jún", "Júl", "Aug", "Szep", "Okt", "Nov", "Dec"];
+        const MONTHS = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Szep", "Okt", "Nov", "Dec"];
         const currentYear = new Date().getFullYear();
         const defaultState = {
             target: 12000000,
@@ -404,7 +530,9 @@
 
         const elements = {
             yearLabel: document.getElementById("yearLabel"),
-            totalIncome: document.getElementById("totalIncome"),
+            billedIncome: document.getElementById("billedIncome"),
+            receivedIncome: document.getElementById("receivedIncome"),
+            openIncome: document.getElementById("openIncome"),
             targetValue: document.getElementById("targetValue"),
             progressValue: document.getElementById("progressValue"),
             progressBar: document.getElementById("progressBar"),
@@ -415,6 +543,7 @@
             invoiceDate: document.getElementById("invoiceDate"),
             invoiceAmount: document.getElementById("invoiceAmount"),
             invoiceName: document.getElementById("invoiceName"),
+            invoicePaid: document.getElementById("invoicePaid"),
             invoiceList: document.getElementById("invoiceList"),
             emptyState: document.getElementById("emptyState")
         };
@@ -452,12 +581,18 @@
 
         function render() {
             const invoices = getYearInvoices();
-            const total = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+            const billed = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+            const received = invoices
+                .filter((invoice) => invoice.paid)
+                .reduce((sum, invoice) => sum + invoice.amount, 0);
+            const open = billed - received;
             const target = Number(state.target) || 0;
-            const progress = target > 0 ? Math.min((total / target) * 100, 999) : 0;
+            const progress = target > 0 ? Math.min((received / target) * 100, 999) : 0;
 
             elements.yearLabel.textContent = currentYear;
-            elements.totalIncome.textContent = formatFt(total);
+            elements.billedIncome.textContent = formatFt(billed);
+            elements.receivedIncome.textContent = formatFt(received);
+            elements.openIncome.textContent = formatFt(open);
             elements.targetValue.textContent = formatFt(target);
             elements.progressValue.textContent = `${Math.round(progress)}%`;
             elements.progressBar.style.width = `${Math.min(progress, 100)}%`;
@@ -471,12 +606,18 @@
             const monthlyTarget = target > 0 ? target / 12 : 0;
             const monthly = Array.from({ length: 12 }, (_, month) => {
                 return invoices
+                    .filter((invoice) => invoice.paid)
                     .filter((invoice) => new Date(invoice.date).getMonth() === month)
                     .reduce((sum, invoice) => sum + invoice.amount, 0);
             });
+            const plotHeight = Math.max(elements.chart.clientHeight - 56, 1);
             const maxValue = Math.max(monthlyTarget, ...monthly, 1);
+            const targetTop = 28 + (1 - (monthlyTarget / maxValue)) * plotHeight;
+            const targetLine = target > 0
+                ? `<div class="target-line" style="top: ${targetTop}px"><span>havi cel: ${shortFt(monthlyTarget)}</span></div>`
+                : "";
 
-            elements.chart.innerHTML = monthly.map((amount, index) => {
+            elements.chart.innerHTML = targetLine + monthly.map((amount, index) => {
                 const height = Math.max((amount / maxValue) * 100, amount > 0 ? 3 : 0);
                 const emptyClass = amount === 0 ? " empty" : "";
                 return `
@@ -493,7 +634,7 @@
         function shortFt(value) {
             if (value >= 1000000) return `${(value / 1000000).toFixed(1).replace(".", ",")}M`;
             if (value >= 1000) return `${Math.round(value / 1000)}k`;
-            return String(value);
+            return String(Math.round(value));
         }
 
         function createId() {
@@ -510,11 +651,17 @@
         function renderInvoices(invoices) {
             elements.emptyState.style.display = invoices.length ? "none" : "block";
             elements.invoiceList.innerHTML = invoices.map((invoice) => `
-                <tr>
+                <tr class="${invoice.paid ? "paid-row" : ""}">
                     <td>${invoice.date}</td>
                     <td>${escapeHtml(invoice.name || "-")}</td>
+                    <td>
+                        <button class="paid-toggle ${invoice.paid ? "is-paid" : ""}" type="button" data-paid-id="${invoice.id}">
+                            <span class="status-dot"></span>
+                            ${invoice.paid ? "Beerkezett" : "Kint van"}
+                        </button>
+                    </td>
                     <td class="amount">${formatFt(invoice.amount)}</td>
-                    <td><button class="btn danger" type="button" data-id="${invoice.id}">Törlés</button></td>
+                    <td class="actions"><button class="btn danger" type="button" data-id="${invoice.id}">Torles</button></td>
                 </tr>
             `).join("");
         }
@@ -542,7 +689,8 @@
                 id: createId(),
                 date: elements.invoiceDate.value,
                 amount: Math.max(0, Number(elements.invoiceAmount.value) || 0),
-                name: elements.invoiceName.value.trim()
+                name: elements.invoiceName.value.trim(),
+                paid: elements.invoicePaid.checked
             });
             saveState();
             elements.invoiceForm.reset();
@@ -551,6 +699,17 @@
         });
 
         elements.invoiceList.addEventListener("click", (event) => {
+            const paidButton = event.target.closest("button[data-paid-id]");
+            if (paidButton) {
+                state.invoices = state.invoices.map((invoice) => {
+                    if (invoice.id !== paidButton.dataset.paidId) return invoice;
+                    return { ...invoice, paid: !invoice.paid };
+                });
+                saveState();
+                render();
+                return;
+            }
+
             const button = event.target.closest("button[data-id]");
             if (!button) return;
             state.invoices = state.invoices.filter((invoice) => invoice.id !== button.dataset.id);
