@@ -270,6 +270,42 @@
             box-shadow: 0 0 0 3px var(--accent-soft);
         }
 
+        .money-input {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            min-height: 44px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #090d15;
+            overflow: hidden;
+        }
+
+        .money-input:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .money-input input {
+            min-height: 42px;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .money-input input:focus {
+            border: 0;
+            box-shadow: none;
+        }
+
+        .money-input span {
+            padding: 0 12px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
         .checkbox-row {
             display: flex;
             align-items: center;
@@ -485,7 +521,10 @@
                     </div>
                     <div class="field">
                         <label for="invoiceAmount">Osszeg</label>
-                        <input id="invoiceAmount" type="number" min="1" step="1000" inputmode="numeric" required>
+                        <div class="money-input">
+                            <input id="invoiceAmount" type="text" inputmode="numeric" autocomplete="off" placeholder="0" required>
+                            <span>Ft</span>
+                        </div>
                     </div>
                     <div class="field full">
                         <label for="invoiceName">Megjegyzes</label>
@@ -648,6 +687,15 @@
             return new Date(today.getTime() - offset).toISOString().slice(0, 10);
         }
 
+        function parseAmount(value) {
+            return Number(String(value).replace(/[^\d]/g, "")) || 0;
+        }
+
+        function formatAmountInput(input) {
+            const amount = parseAmount(input.value);
+            input.value = amount ? new Intl.NumberFormat("hu-HU").format(amount) : "";
+        }
+
         function renderInvoices(invoices) {
             elements.emptyState.style.display = invoices.length ? "none" : "block";
             elements.invoiceList.innerHTML = invoices.map((invoice) => `
@@ -685,10 +733,16 @@
 
         elements.invoiceForm.addEventListener("submit", (event) => {
             event.preventDefault();
+            const amount = parseAmount(elements.invoiceAmount.value);
+            if (!amount) {
+                elements.invoiceAmount.focus();
+                return;
+            }
+
             state.invoices.push({
                 id: createId(),
                 date: elements.invoiceDate.value,
-                amount: Math.max(0, Number(elements.invoiceAmount.value) || 0),
+                amount,
                 name: elements.invoiceName.value.trim(),
                 paid: elements.invoicePaid.checked
             });
@@ -696,6 +750,10 @@
             elements.invoiceForm.reset();
             elements.invoiceDate.value = todayLocal();
             render();
+        });
+
+        elements.invoiceAmount.addEventListener("blur", () => {
+            formatAmountInput(elements.invoiceAmount);
         });
 
         elements.invoiceList.addEventListener("click", (event) => {
